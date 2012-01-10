@@ -18,9 +18,9 @@ class AWSRequest:
     
     ENDPOINT = "http://aws.amazonaws.com/onca/xml"
     SERVICE = "AWSECommerceService"
-    AWSSECURITYKEY = "SECURITYKEY"
-    AWSACCESSID = "ACCESSID"
-    AWSASSOCIATEID = "ASSOCIATEID"
+    AWSSECURITYKEY = "SecurityKey"
+    AWSACCESSID = "AccessId"
+    AWSASSOCIATEID = "personalprice-20"
     
     def __init__(self, operation = "", params = None, accesskeyid = None, associatetag = None):
         self.params = {}

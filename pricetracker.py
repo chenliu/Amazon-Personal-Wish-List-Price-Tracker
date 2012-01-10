@@ -6,6 +6,7 @@ Created on Jan 9, 2012
 
 import sys
 import json
+import logging
 
 from amazonapi.request import ItemLookUpRequest
 from amazonapi.response import AWSResponse
@@ -80,14 +81,17 @@ class PriceTrackRequest(ItemLookUpRequest):
         response.get_discount()
         response.get_item_info()
         if(self.min_discount != None and self.min_discount > response.responsedict.get("Discount", 0)):
+            logging.debug(self.min_discount)
             response.responsedict["match"] = False
         else:
             maxp = sys.maxint
             if(self.max_price != None):
                 maxp = self.max_price + 1
+                logging.debug(maxp)
             minp = -1
             if(self.min_price != None):
                 minp = self.min_price - 1
+                logging.debug(minp)
             p = min(response.responsedict.get("Price(New)", sys.maxint), response.responsedict.get("Price(Used)", sys.maxint))
             if(minp < p < maxp):
                 response.responsedict["match"] = True
@@ -97,6 +101,11 @@ class PriceTrackRequest(ItemLookUpRequest):
     
     def get_json_response(self):
         return json.dumps(self.get_response().responsedict)
+    
+def handle_single_request(asin, maxprice = None, minprice = None, mindiscount = None):
+    request = PriceTrackRequest(asin, maxprice, minprice, mindiscount)
+    response = request.get_response()
+    return json.dumps(response.dump_result())
     
 if __name__ == '__main__':
     request = PriceTrackRequest("B000PFLKAY", 200000, 0, 10)
